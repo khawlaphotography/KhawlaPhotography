@@ -1285,24 +1285,27 @@
             
             displayTestimonials();
             
-            const specialOfferHTML = `
-                <div class="glass-box" style="background: rgba(255,215,0,0.15); border:2px solid #FFD966; margin-bottom:20px; padding: 15px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
-                        <div style="text-align: right;">
-                            <h3 style="color:#FFE5A3; margin:0; font-size:1.3rem;">🔥 عرض نهاية الأسبوع</h3>
-                            <p style="margin:5px 0 0 0; font-size:0.95rem;">احجز أي بكج واحصل على <strong>البوم صور هدية</strong></p>
-                        </div>
-                        <div id="offerTimer" style="background: rgba(0,0,0,0.3); padding:8px 15px; border-radius:50px; border:1px solid #FFD966; font-size:0.9rem; min-width: 200px; text-align: center;">
-                            <i class="fas fa-clock" style="color:#FFD966; margin-left:5px;"></i>
-                            <span style="color:#FFE5A3;">ينتهي العرض بعد</span><br>
-                            <span id="days">0</span>d <span id="hours">0</span>h <span id="minutes">0</span>m
-                        </div>
-                    </div>
+            // إضافة العرض الخاص - بس إذا showSpecialOffer = true
+if (showSpecialOffer) {
+    const specialOfferHTML = `
+        <div class="glass-box" style="background: rgba(255,215,0,0.15); border:2px solid #FFD966; margin-bottom:20px; padding: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <div style="text-align: right;">
+                    <h3 style="color:#FFE5A3; margin:0; font-size:1.3rem;">🔥 عرض نهاية الأسبوع</h3>
+                    <p style="margin:5px 0 0 0; font-size:0.95rem;">احجز أي بكج واحصل على <strong>البوم صور هدية</strong></p>
                 </div>
-            `;
-            
-            document.getElementById('restContent').insertAdjacentHTML('afterbegin', specialOfferHTML);
-            
+                <div id="offerTimer" style="background: rgba(0,0,0,0.3); padding:8px 15px; border-radius:50px; border:1px solid #FFD966; font-size:0.9rem; min-width: 200px; text-align: center;">
+                    <i class="fas fa-clock" style="color:#FFD966; margin-left:5px;"></i>
+                    <span style="color:#FFE5A3;">ينتهي العرض بعد</span><br>
+                    <span id="days">0</span>d <span id="hours">0</span>h <span id="minutes">0</span>m
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('restContent').insertAdjacentHTML('afterbegin', specialOfferHTML);
+}
+                        
             updateOfferTimer();
             setInterval(updateOfferTimer, 60000);
         };
