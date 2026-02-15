@@ -996,11 +996,8 @@
 
     <script>
         // ===== JSONBin.io الإعدادات =====
-        // 👇 ضعي بياناتك هنا بعد التسجيل في JSONBin.io
-        const MASTER_KEY = "$2a$10$674DeomPKlC0zd4hmiftveDrQ2GMoi3GUwUx7hGLMzys26kwqR.xC"; // من صفحة API Keys
-        const BIN_ID = "6991a8ebd0ea881f40bc0b28"; // الرقم اللي أخذتيه
-
-        // رابط API كامل
+        const MASTER_KEY = "$2a$10$674DeomPKlC0zd4hmiftveDrQ2GMoi3GUwUx7hGLMzys26kwqR.xC";
+        const BIN_ID = "6991a8ebd0ea881f40bc0b28";
         const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
         // بيانات الباقات التفصيلية
@@ -1067,23 +1064,11 @@
             }
         };
 
-        // ===== التحكم في توقيت العرض الخاص =====
-        // غيري الأرقام هنا حسب ما تبيين 👇
-        var showSpecialOffer = false;        // true = يظهر | false = يختفي
-
-        // 👇 هنا تحددين المدة بالضبط
-        var offerDays = 0;                 // عدد الأيام
-        var offerHours = 0;                 // عدد الساعات  
-        var offerMinutes = 10;               // عدد الدقائق
-
-        // تاريخ البداية (الوقت الحالي)
-        const startTime = new Date();
-
-        // وقت الانتهاء = وقت البداية + المدة اللي حددتيها
-        const offerEndTime = new Date(startTime.getTime() + 
-                                      (offerDays * 24 * 60 * 60 * 1000) + 
-                                      (offerHours * 60 * 60 * 1000) + 
-                                      (offerMinutes * 60 * 1000));
+        // ===== التحكم في توقيت العرض الخاص (تاريخ ثابت) =====
+        var showSpecialOffer = true;
+        
+        // ✅ تحديد تاريخ انتهاء ثابت (ما يتغير بتحديث الصفحة)
+        const offerEndTime = new Date('2026-02-20T23:59:59+03:00'); // غيري التاريخ حسب رغبتك
 
         function updateOfferTimer() {
             const now = new Date();
@@ -1104,21 +1089,12 @@
         }
 
         // ===== دوال JSONBin.io =====
-
-        // جلب التعليقات من قاعدة البيانات
         async function loadTestimonials() {
             try {
                 const response = await fetch(`${BIN_URL}/latest`, {
-                    headers: {
-                        'X-Master-Key': MASTER_KEY
-                    }
+                    headers: { 'X-Master-Key': MASTER_KEY }
                 });
-                
-                if (!response.ok) {
-                    console.log("لا توجد بيانات بعد، سننشئها أول مرة");
-                    return [];
-                }
-                
+                if (!response.ok) return [];
                 const data = await response.json();
                 return data.record.testimonials || [];
             } catch (error) {
@@ -1127,7 +1103,6 @@
             }
         }
 
-        // حفظ التعليقات في قاعدة البيانات
         async function saveTestimonials(testimonials) {
             try {
                 const response = await fetch(BIN_URL, {
@@ -1138,7 +1113,6 @@
                     },
                     body: JSON.stringify({ testimonials: testimonials })
                 });
-                
                 return response.ok;
             } catch (error) {
                 console.error("خطأ في الحفظ:", error);
@@ -1146,7 +1120,6 @@
             }
         }
 
-        // عرض التعليقات في الصفحة الرئيسية
         async function displayTestimonials() {
             const container = document.getElementById('testimonialsContainer');
             if (!container) return;
@@ -1158,7 +1131,6 @@
                 return;
             }
             
-            // آخر 3 تعليقات
             const latest = testimonials.slice(-3).reverse();
             
             container.innerHTML = latest.map((t, index) => {
@@ -1180,11 +1152,9 @@
                 `;
             }).join('');
             
-            // تحديث نافذة جميع التعليقات
             await displayAllTestimonials(testimonials);
         }
 
-        // عرض جميع التعليقات
         async function displayAllTestimonials(testimonials) {
             const container = document.getElementById('allTestimonialsList');
             if (!container) return;
@@ -1215,7 +1185,6 @@
             }).join('');
         }
 
-        // إضافة تعليق جديد
         async function addTestimonial(name, comment) {
             const testimonials = await loadTestimonials();
             
@@ -1236,19 +1205,15 @@
             }
         }
 
-        // معالجة الإعجاب
         async function handleLike(index) {
             const testimonials = await loadTestimonials();
-            
             if (!testimonials[index]) return;
             
             testimonials[index].likes = (testimonials[index].likes || 0) + 1;
-            
             await saveTestimonials(testimonials);
             await displayTestimonials();
         }
 
-        // حساب الوقت المنقضي
         function getTimeAgo(dateString) {
             const now = new Date();
             const past = new Date(dateString);
@@ -1260,7 +1225,6 @@
             return `منذ ${Math.floor(diffMin / 1440)} يوم`;
         }
 
-        // فتح مودال الباقة
         function openPackageModal(packageKey) {
             const data = packagesData[packageKey];
             if (!data) return;
@@ -1305,14 +1269,12 @@
             document.getElementById('packageModal').style.display = 'flex';
         }
 
-        // إغلاق مودال جميع التعليقات
         function closeAllTestimonialsModal() {
             document.getElementById('allTestimonialsModal').style.display = 'none';
         }
 
         // ===== أحداث الصفحة =====
         window.onload = function() {
-            // تأثيرات الظهور
             setTimeout(() => {
                 document.getElementById('welcomeBox').classList.add('welcome-animation');
             }, 500);
@@ -1321,10 +1283,8 @@
                 document.getElementById('restContent').classList.add('show');
             }, 2500);
             
-            // تحميل التعليقات
             displayTestimonials();
             
-            // إضافة العرض الخاص
             const specialOfferHTML = `
                 <div class="glass-box" style="background: rgba(255,215,0,0.15); border:2px solid #FFD966; margin-bottom:20px; padding: 15px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
@@ -1343,12 +1303,10 @@
             
             document.getElementById('restContent').insertAdjacentHTML('afterbegin', specialOfferHTML);
             
-            // تشغيل التوقيت
             updateOfferTimer();
             setInterval(updateOfferTimer, 60000);
         };
 
-        // ربط نموذج إضافة التعليق
         document.getElementById('addTestimonialForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
             const name = document.getElementById('newName').value.trim();
@@ -1360,13 +1318,11 @@
             }
         });
 
-        // ربط زر عرض جميع التعليقات
         document.getElementById('showTestimonialsBtn')?.addEventListener('click', function() {
             document.getElementById('allTestimonialsModal').style.display = 'flex';
             displayTestimonials();
         });
 
-                // ربط بطاقات الباقات
         document.querySelectorAll('.package-card').forEach(card => {
             card.addEventListener('click', function() {
                 const packageKey = this.dataset.package;
@@ -1376,38 +1332,27 @@
             });
         });
 
-        // إغلاق مودال الباقات
         document.querySelectorAll('.close-modal').forEach(btn => {
             btn.addEventListener('click', function() {
                 this.closest('.modal').style.display = 'none';
             });
         });
 
-        // إغلاق المودال عند الضغط خارج المحتوى
         window.addEventListener('click', function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
         });
 
-        // زر العودة للأعلى
         const topBtn = document.getElementById("topBtn");
         window.onscroll = function() {
-            if (window.scrollY > 300) {
-                topBtn.style.display = "block";
-            } else {
-                topBtn.style.display = "none";
-            }
+            topBtn.style.display = window.scrollY > 300 ? "block" : "none";
         };
         
         topBtn.onclick = function() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        // معرض الصور (Lightbox)
         const images = document.querySelectorAll(".gallery-container img");
         const lightbox = document.getElementById("lightbox");
         const lightboxImg = document.getElementById("lightbox-img");
@@ -1426,6 +1371,4 @@
         });
     </script>
 </body>
-</html>
-                
-       
+    </html>
