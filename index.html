@@ -1065,11 +1065,11 @@
         };
 
         // ===== التحكم في توقيت العرض الخاص (تاريخ ثابت) =====
-        var showSpecialOffer = false;
-        
-        // ✅ تحديد تاريخ انتهاء ثابت (ما يتغير بتحديث الصفحة)
-        const offerEndTime = new Date('2026-02-20T23:59:59+03:00'); // غيري التاريخ حسب رغبتك
+        // ✅ هذا التاريخ ثابت وما يتغير بتحديث الصفحة
+var showSpecialOffer = true;
 
+// تاريخ انتهاء العرض: 22 فبراير 2026 الساعة 12 منتصف الليل (بتوقيت مصر)
+const offerEndTime = new Date('2026-02-15T23:59:59+02:00');
         function updateOfferTimer() {
             const now = new Date();
             const remaining = offerEndTime - now;
@@ -1291,7 +1291,7 @@ if (showSpecialOffer) {
         <div class="glass-box" style="background: rgba(255,215,0,0.15); border:2px solid #FFD966; margin-bottom:20px; padding: 15px;">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
                 <div style="text-align: right;">
-                    <h3 style="color:#FFE5A3; margin:0; font-size:1.3rem;">🔥 عرض نهاية الأسبوع</h3>
+                    <h3 style="color:#FFE5A3; margin:0; font-size:1.3rem;">عرض مؤقت🔥</h3>
                     <p style="margin:5px 0 0 0; font-size:0.95rem;">احجز أي بكج واحصل على <strong>البوم صور هدية</strong></p>
                 </div>
                 <div id="offerTimer" style="background: rgba(0,0,0,0.3); padding:8px 15px; border-radius:50px; border:1px solid #FFD966; font-size:0.9rem; min-width: 200px; text-align: center;">
