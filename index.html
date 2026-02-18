@@ -330,7 +330,7 @@
             transform: scale(1.03);
         }
 
-        /* أنماط التعليقات */
+        /* أنماط التعليقات المحسنة - مثل تيك توك */
         .testimonials-container {
             display: flex;
             flex-direction: column;
@@ -347,12 +347,34 @@
             border-radius: 20px;
         }
 
+        .testimonials-scroll-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-left: 10px;
+            scroll-behavior: smooth;
+        }
+
+        .testimonials-scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .testimonials-scroll-container::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .testimonials-scroll-container::-webkit-scrollbar-thumb {
+            background: #FFD966;
+            border-radius: 10px;
+        }
+
         .testimonial-item {
             background: rgba(255,255,255,0.03);
             border-radius: 20px;
             padding: 20px;
             border-right: 4px solid #FFD966;
             text-align: right;
+            margin-bottom: 15px;
         }
 
         .testimonial-header {
@@ -402,12 +424,49 @@
             transition: all 0.3s ease;
         }
 
-        .like-button:hover {
-            background: rgba(255,107,107,0.1);
+        .like-button i {
+            transition: transform 0.2s ease;
+        }
+
+        .like-button:hover i {
+            transform: scale(1.2);
+        }
+
+        .like-button.liked i {
+            color: #ff3b3b;
+            animation: heartPop 0.3s ease;
+        }
+
+        @keyframes heartPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+
+        .fa-regular.fa-heart {
+            font-weight: 400;
+        }
+
+        .fa-solid.fa-heart {
+            font-weight: 900;
         }
 
         .like-count {
             font-weight: bold;
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-button:hover {
+            opacity: 0.7;
+            transform: scale(1.1);
         }
 
         /* نافذة جميع التعليقات */
@@ -483,11 +542,33 @@
             margin: 20px 0;
         }
 
+        .all-testimonials-scroll {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-left: 10px;
+            scroll-behavior: smooth;
+        }
+
+        .all-testimonials-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .all-testimonials-scroll::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .all-testimonials-scroll::-webkit-scrollbar-thumb {
+            background: #FFD966;
+            border-radius: 10px;
+        }
+
         .all-testimonial-item {
             background: rgba(255,255,255,0.03);
             border-radius: 15px;
             padding: 15px;
             border-right: 3px solid #FFD966;
+            margin-bottom: 10px;
         }
 
         .all-testimonial-header {
@@ -505,6 +586,13 @@
         .all-testimonial-time {
             color: rgba(255,255,255,0.5);
             font-size: 0.8rem;
+        }
+
+        .all-testimonial-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
         }
 
         .all-like-button {
@@ -1064,36 +1152,19 @@
             }
         };
 
-        // ===== التحكم في توقيت العرض الخاص (تاريخ ثابت) =====
-        var showSpecialOffer = false;
-        const offerEndTime = new Date('2026-02-20T23:59:59+02:00'); // تم تعديل التاريخ
-
-        function updateOfferTimer() {
-            const now = new Date();
-            const remaining = offerEndTime - now;
-            
-            if (remaining <= 0) {
-                const timerElement = document.getElementById('offerTimer');
-                if (timerElement) {
-                    timerElement.innerHTML = '<span style="color:#FFD966;">انتهى العرض</span>';
-                }
-                return;
+        // ===== نظام التعليقات المحسن (مثل تيك توك) =====
+        
+        // دالة لجلب معرف فريد للمستخدم من localStorage
+        function getCurrentUserId() {
+            let userId = localStorage.getItem('userId');
+            if (!userId) {
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('userId', userId);
             }
-            
-            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-            
-            const daysElement = document.getElementById('days');
-            const hoursElement = document.getElementById('hours');
-            const minutesElement = document.getElementById('minutes');
-            
-            if (daysElement) daysElement.textContent = days;
-            if (hoursElement) hoursElement.textContent = hours;
-            if (minutesElement) minutesElement.textContent = minutes;
+            return userId;
         }
 
-        // ===== دوال JSONBin.io =====
+        // تحميل التعليقات من JSONBin
         async function loadTestimonials() {
             try {
                 const response = await fetch(`${BIN_URL}/latest`, {
@@ -1108,6 +1179,7 @@
             }
         }
 
+        // حفظ التعليقات في JSONBin
         async function saveTestimonials(testimonials) {
             try {
                 const response = await fetch(BIN_URL, {
@@ -1125,79 +1197,245 @@
             }
         }
 
+        // دالة للحصول على الوقت النسبي (منذ دقيقة، منذ ساعة، إلخ)
+        function getTimeAgo(dateString) {
+            const now = new Date();
+            const past = new Date(dateString);
+            const diffSeconds = Math.floor((now - past) / 1000);
+            
+            if (diffSeconds < 60) return 'الآن';
+            if (diffSeconds < 3600) return `منذ ${Math.floor(diffSeconds / 60)} دقيقة`;
+            if (diffSeconds < 86400) return `منذ ${Math.floor(diffSeconds / 3600)} ساعة`;
+            if (diffSeconds < 2592000) return `منذ ${Math.floor(diffSeconds / 86400)} يوم`;
+            return `منذ ${Math.floor(diffSeconds / 2592000)} شهر`;
+        }
+
+        // عرض التعليقات في الصفحة الرئيسية (أحدث 3 مع إمكانية السحب للمزيد)
         async function displayTestimonials() {
             const container = document.getElementById('testimonialsContainer');
             if (!container) return;
             
             const testimonials = await loadTestimonials();
+            const userId = getCurrentUserId();
             
             if (testimonials.length === 0) {
                 container.innerHTML = '<div class="empty-testimonials">لا توجد آراء بعد... كن أول من يشارك!</div>';
                 return;
             }
             
-            const latest = testimonials.slice(-3).reverse();
+            // ترتيب حسب الأحدث
+            const sortedByDate = [...testimonials].sort((a, b) => new Date(b.date) - new Date(a.date));
+            const latest = sortedByDate.slice(0, 3);
             
-            container.innerHTML = latest.map((t, index) => {
-                const originalIndex = testimonials.length - 1 - index;
-                return `
-                    <div class="testimonial-item">
-                        <div class="testimonial-header">
-                            <span class="testimonial-name">${t.name}</span>
-                            <span class="testimonial-time">${getTimeAgo(t.date)}</span>
-                        </div>
-                        <p class="testimonial-text">"${t.comment}"</p>
-                        <div class="testimonial-footer">
-                            <button class="like-button" onclick="handleLike(${originalIndex})">
-                                <i class="fas fa-heart"></i>
-                                <span class="like-count">${t.likes || 0}</span>
+            // إنشاء حاوية قابلة للسحب
+            const scrollDiv = document.createElement('div');
+            scrollDiv.className = 'testimonials-scroll-container';
+            
+            // إضافة أحدث 3 تعليقات
+            latest.forEach(t => {
+                const hasLiked = t.likedBy && t.likedBy.includes(userId);
+                const testimonialDiv = document.createElement('div');
+                testimonialDiv.className = 'testimonial-item';
+                testimonialDiv.setAttribute('data-id', t.id);
+                testimonialDiv.innerHTML = `
+                    <div class="testimonial-header">
+                        <span class="testimonial-name">${t.name}</span>
+                        <span class="testimonial-time">${getTimeAgo(t.date)}</span>
+                    </div>
+                    <p class="testimonial-text">"${t.comment}"</p>
+                    <div class="testimonial-footer">
+                        <button class="like-button ${hasLiked ? 'liked' : ''}" onclick="handleLike('${t.id}')">
+                            <i class="fas ${hasLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                            <span class="like-count">${t.likes || 0}</span>
+                        </button>
+                        ${t.userId === userId ? `
+                            <button class="delete-button" onclick="handleDelete('${t.id}')">
+                                <i class="fas fa-trash"></i>
                             </button>
-                        </div>
+                        ` : ''}
                     </div>
                 `;
-            }).join('');
+                scrollDiv.appendChild(testimonialDiv);
+            });
             
-            await displayAllTestimonials(testimonials);
+            container.innerHTML = '';
+            container.appendChild(scrollDiv);
+            
+            // إضافة خاصية السحب لتحميل المزيد
+            if (testimonials.length > 3) {
+                scrollDiv.addEventListener('scroll', function() {
+                    if (this.scrollTop + this.clientHeight >= this.scrollHeight - 50) {
+                        loadMoreTestimonials(this, sortedByDate, userId);
+                    }
+                });
+            }
         }
 
-        async function displayAllTestimonials(testimonials) {
+        // تحميل المزيد من التعليقات عند السحب للأسفل
+        async function loadMoreTestimonials(container, allTestimonials, userId) {
+            if (container.loadingMore) return;
+            container.loadingMore = true;
+            
+            const currentCount = container.children.length;
+            if (currentCount >= allTestimonials.length) {
+                container.loadingMore = false;
+                return;
+            }
+            
+            const nextItems = allTestimonials.slice(currentCount, currentCount + 3);
+            
+            nextItems.forEach(t => {
+                const hasLiked = t.likedBy && t.likedBy.includes(userId);
+                const div = document.createElement('div');
+                div.className = 'testimonial-item';
+                div.setAttribute('data-id', t.id);
+                div.innerHTML = `
+                    <div class="testimonial-header">
+                        <span class="testimonial-name">${t.name}</span>
+                        <span class="testimonial-time">${getTimeAgo(t.date)}</span>
+                    </div>
+                    <p class="testimonial-text">"${t.comment}"</p>
+                    <div class="testimonial-footer">
+                        <button class="like-button ${hasLiked ? 'liked' : ''}" onclick="handleLike('${t.id}')">
+                            <i class="fas ${hasLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                            <span class="like-count">${t.likes || 0}</span>
+                        </button>
+                        ${t.userId === userId ? `
+                            <button class="delete-button" onclick="handleDelete('${t.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+            
+            container.loadingMore = false;
+        }
+
+        // عرض جميع التعليقات في النافذة المنبثقة (مرتبة حسب الأكثر إعجاباً)
+        async function displayAllTestimonials() {
             const container = document.getElementById('allTestimonialsList');
             if (!container) return;
+            
+            const testimonials = await loadTestimonials();
+            const userId = getCurrentUserId();
             
             if (testimonials.length === 0) {
                 container.innerHTML = '<div class="empty-testimonials">لا توجد آراء بعد...</div>';
                 return;
             }
             
-            const reversed = [...testimonials].reverse();
+            // ترتيب حسب الأكثر إعجاباً ثم الأحدث
+            const sortedByLikes = [...testimonials].sort((a, b) => {
+                if (b.likes !== a.likes) return (b.likes || 0) - (a.likes || 0);
+                return new Date(b.date) - new Date(a.date);
+            });
             
-            container.innerHTML = reversed.map((t, index) => {
-                const originalIndex = testimonials.length - 1 - index;
-                return `
-                    <div class="all-testimonial-item">
-                        <div class="all-testimonial-header">
-                            <span class="all-testimonial-name">${t.name}</span>
-                            <span class="all-testimonial-time">${getTimeAgo(t.date)}</span>
-                        </div>
-                        <p class="all-testimonial-text">"${t.comment}"</p>
-                        <div class="all-testimonial-footer">
-                            <button class="all-like-button" onclick="handleLike(${originalIndex})">
-                                <i class="fas fa-heart"></i> ${t.likes || 0}
+            // إنشاء حاوية قابلة للسحب للمودال
+            const scrollDiv = document.createElement('div');
+            scrollDiv.className = 'all-testimonials-scroll';
+            
+            // إضافة جميع التعليقات
+            sortedByLikes.forEach(t => {
+                const hasLiked = t.likedBy && t.likedBy.includes(userId);
+                const div = document.createElement('div');
+                div.className = 'all-testimonial-item';
+                div.innerHTML = `
+                    <div class="all-testimonial-header">
+                        <span class="all-testimonial-name">${t.name}</span>
+                        <span class="all-testimonial-time">${getTimeAgo(t.date)}</span>
+                    </div>
+                    <p class="all-testimonial-text">"${t.comment}"</p>
+                    <div class="all-testimonial-footer">
+                        <button class="all-like-button" onclick="handleLike('${t.id}')">
+                            <i class="fas ${hasLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i> ${t.likes || 0}
+                        </button>
+                        ${t.userId === userId ? `
+                            <button class="delete-button" onclick="handleDelete('${t.id}')">
+                                <i class="fas fa-trash"></i> حذف
                             </button>
-                        </div>
+                        ` : ''}
                     </div>
                 `;
-            }).join('');
+                scrollDiv.appendChild(div);
+            });
+            
+            container.innerHTML = '';
+            container.appendChild(scrollDiv);
         }
 
+        // معالجة الإعجاب (Toggle: زيادة/إزالة)
+        async function handleLike(commentId) {
+            const testimonials = await loadTestimonials();
+            const userId = getCurrentUserId();
+            
+            const comment = testimonials.find(t => t.id === commentId);
+            if (!comment) return;
+            
+            // التأكد من وجود المصفوفات
+            if (!comment.likedBy) comment.likedBy = [];
+            
+            // التحقق مما إذا كان المستخدم قد أعجب مسبقاً
+            const userLikedIndex = comment.likedBy.indexOf(userId);
+            const hasLiked = userLikedIndex !== -1;
+            
+            if (hasLiked) {
+                // إزالة الإعجاب
+                comment.likes = Math.max((comment.likes || 0) - 1, 0);
+                comment.likedBy.splice(userLikedIndex, 1);
+            } else {
+                // إضافة إعجاب
+                comment.likes = (comment.likes || 0) + 1;
+                comment.likedBy.push(userId);
+            }
+            
+            const saved = await saveTestimonials(testimonials);
+            if (saved) {
+                await displayTestimonials();
+                await displayAllTestimonials();
+            }
+        }
+
+        // معالجة حذف التعليق (فوق تعليق المستخدم نفسه)
+        async function handleDelete(commentId) {
+            if (!confirm('هل أنت متأكد من حذف تعليقك؟')) return;
+            
+            const testimonials = await loadTestimonials();
+            const userId = getCurrentUserId();
+            
+            const commentIndex = testimonials.findIndex(t => t.id === commentId);
+            if (commentIndex === -1) return;
+            
+            // التحقق من أن المستخدم هو صاحب التعليق
+            if (testimonials[commentIndex].userId !== userId) {
+                alert('لا يمكنك حذف تعليق شخص آخر');
+                return;
+            }
+            
+            // حذف التعليق
+            testimonials.splice(commentIndex, 1);
+            
+            const saved = await saveTestimonials(testimonials);
+            if (saved) {
+                await displayTestimonials();
+                await displayAllTestimonials();
+            }
+        }
+
+        // إضافة تعليق جديد
         async function addTestimonial(name, comment) {
             const testimonials = await loadTestimonials();
+            const userId = getCurrentUserId();
             
             testimonials.push({
+                id: 'comment_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
                 name: name,
                 comment: comment,
                 date: new Date().toISOString(),
-                likes: 0
+                likes: 0,
+                likedBy: [],
+                userId: userId
             });
             
             const saved = await saveTestimonials(testimonials);
@@ -1205,31 +1443,20 @@
             if (saved) {
                 alert("✅ تم إضافة رأيك! شكراً لك");
                 await displayTestimonials();
+                await displayAllTestimonials();
             } else {
                 alert("❌ حدث خطأ في الحفظ، حاول مرة أخرى");
             }
         }
 
-        async function handleLike(index) {
-            const testimonials = await loadTestimonials();
-            if (!testimonials[index]) return;
-            
-            testimonials[index].likes = (testimonials[index].likes || 0) + 1;
-            await saveTestimonials(testimonials);
-            await displayTestimonials();
+        // إغلاق نافذة جميع التعليقات
+        function closeAllTestimonialsModal() {
+            const modal = document.getElementById('allTestimonialsModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto'; // إعادة التمرير للخلفية
         }
 
-        function getTimeAgo(dateString) {
-            const now = new Date();
-            const past = new Date(dateString);
-            const diffMin = Math.floor((now - past) / 60000);
-            
-            if (diffMin < 1) return 'الآن';
-            if (diffMin < 60) return `منذ ${diffMin} دقيقة`;
-            if (diffMin < 1440) return `منذ ${Math.floor(diffMin / 60)} ساعة`;
-            return `منذ ${Math.floor(diffMin / 1440)} يوم`;
-        }
-
+        // فتح مودال الباقة
         function openPackageModal(packageKey) {
             const data = packagesData[packageKey];
             if (!data) return;
@@ -1250,10 +1477,10 @@
             `;
 
             const contactInfo = `
-                <div class="contact-box">
+                <div class="contact-box" style="text-align: center; margin: 15px 0;">
                     <p style="margin: 10px 0;">
-                        <a href="https://www.instagram.com/khawla_photographer" target="_blank">Instagram</a> |
-                        <a href="https://www.tiktok.com/@khawla_photographer" target="_blank">TikTok</a>
+                        <a href="https://www.instagram.com/khawla_photographer" target="_blank" style="color: #FFD966; text-decoration: none;">Instagram</a> |
+                        <a href="https://www.tiktok.com/@khawla_photographer" target="_blank" style="color: #FFD966; text-decoration: none;">TikTok</a>
                     </p>
                     <p style="color: #FFD966;">KHAWLA AL GAHRANI</p>
                 </div>
@@ -1274,12 +1501,9 @@
             document.getElementById('packageModal').style.display = 'flex';
         }
 
-        function closeAllTestimonialsModal() {
-            document.getElementById('allTestimonialsModal').style.display = 'none';
-        }
-
         // ===== أحداث الصفحة =====
         window.onload = function() {
+            // تأثيرات الظهور
             setTimeout(() => {
                 document.getElementById('welcomeBox').classList.add('welcome-animation');
             }, 500);
@@ -1288,6 +1512,7 @@
                 document.getElementById('restContent').classList.add('show');
             }, 2500);
             
+            // تحميل التعليقات
             displayTestimonials();
             
             // إضافة العرض الخاص - بس إذا showSpecialOffer = true
@@ -1314,6 +1539,7 @@
             }
         };
 
+        // حدث إرسال نموذج التعليق
         document.getElementById('addTestimonialForm')?.addEventListener('submit', function(e) {
             e.preventDefault();
             const name = document.getElementById('newName').value.trim();
@@ -1325,11 +1551,15 @@
             }
         });
 
-        document.getElementById('showTestimonialsBtn')?.addEventListener('click', function() {
-            document.getElementById('allTestimonialsModal').style.display = 'flex';
-            displayTestimonials();
+        // حدث زر عرض جميع التعليقات
+        document.getElementById('showTestimonialsBtn')?.addEventListener('click', async function() {
+            await displayAllTestimonials();
+            const modal = document.getElementById('allTestimonialsModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // منع التمرير في الخلفية
         });
 
+        // أحداث النقر على بطاقات الباقات
         document.querySelectorAll('.package-card').forEach(card => {
             card.addEventListener('click', function() {
                 const packageKey = this.dataset.package;
@@ -1339,18 +1569,23 @@
             });
         });
 
+        // إغلاق المودالات عند النقر على علامة X
         document.querySelectorAll('.close-modal').forEach(btn => {
             btn.addEventListener('click', function() {
                 this.closest('.modal').style.display = 'none';
+                document.body.style.overflow = 'auto'; // إعادة التمرير للخلفية
             });
         });
 
+        // إغلاق المودال عند النقر خارجه
         window.addEventListener('click', function(event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
+                document.body.style.overflow = 'auto'; // إعادة التمرير للخلفية
             }
         });
 
+        // زر العودة للأعلى
         const topBtn = document.getElementById("topBtn");
         window.onscroll = function() {
             topBtn.style.display = window.scrollY > 300 ? "block" : "none";
@@ -1360,6 +1595,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
+        // نظام الـ Lightbox للصور
         const images = document.querySelectorAll(".gallery-container img");
         const lightbox = document.getElementById("lightbox");
         const lightboxImg = document.getElementById("lightbox-img");
@@ -1378,4 +1614,5 @@
         });
     </script>
 </body>
+
     </html>
