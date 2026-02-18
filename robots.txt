@@ -1,16 +1,107 @@
-# منع روبوتات الذكاء الاصطناعي المعروفة
+
+# OpenAI
 User-agent: GPTBot
 Disallow: /
+User-agent: ChatGPT-User
+Disallow: /
 
+# Google AI
 User-agent: Google-Extended
 Disallow: /
 
+# Common Crawl (يغذي العديد من نماذج الذكاء الاصطناعي)
 User-agent: CCBot
 Disallow: /
 
+# Anthropic (Claude)
 User-agent: anthropic-ai
 Disallow: /
+User-agent: ClaudeBot
+Disallow: /
+User-agent: Claude-Web
+Disallow: /
 
-# ومنع باقي الروبوتات أيضاً إن أردت
+# Meta (Facebook/Instagram AI)
+User-agent: FacebookBot
+Disallow: /
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+# Amazon / Alexa
+User-agent: Amazonbot
+Disallow: /
+
+# Apple
+User-agent: Applebot-Extended
+Disallow: /
+
+# Microsoft/Bing AI
+User-agent: BingBot
+Disallow: /
+User-agent: MicrosoftUser-ai
+Disallow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Disallow: /
+
+# Cohere AI
+User-agent: cohere-ai
+Disallow: /
+
+# AI scrapers العامة
+User-agent: Bytespider
+Disallow: /
+User-agent: ImagesiftBot
+Disallow: /
+User-agent: Diffbot
+Disallow: /
+User-agent: DataForSeoBot
+Disallow: /
+User-agent: PiplBot
+Disallow: /
+User-agent: Magpie-Crawler
+Disallow: /
+User-agent: omgili
+Disallow: /
+User-agent: omgilibot
+Disallow: /
+User-agent: Bytedance
+Disallow: /
+User-agent: Bytedance-Embedded
+Disallow: /
+
+# Twitter/X
+User-agent: Twitterbot
+Disallow: /
+
+# ============================================
+# السماح لمحركات البحث العادية فقط
+# ============================================
+
+# Google Search (العادي)
+User-agent: Googlebot
+Allow: /
+
+# Bing Search (العادي)
+User-agent: bingbot
+Allow: /
+
+# Yahoo
+User-agent: Slurp
+Allow: /
+
+# Yandex (إذا كنت مهتماً بالسوق الروسي)
+User-agent: Yandex
+Allow: /
+
+# ============================================
+# منع جميع الروبوتات الأخرى غير المذكورة
+# ============================================
 User-agent: *
 Disallow: /
+
+# ============================================
+# تحديد مسار الملف (اختياري)
+# ============================================
+Sitemap: https://khawlaphotography.github.io/sitemap.xml
