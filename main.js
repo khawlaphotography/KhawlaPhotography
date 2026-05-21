@@ -364,11 +364,328 @@ function closeAllTestimonialsModal() {
 }
 
 // =====================================================
+// ١. شريط تقدم الحجز
+// =====================================================
+
+// إعدادات الشريط — عدّل هذه الأرقام من packages.js أو هنا مباشرة
+const BOOKING_BAR = {
+  totalSlots: 8,       // إجمالي أيام الفرح المتاحة في الشهر
+  bookedSlots: 5,      // كم يوم تم حجزه فعلاً (عدّلها يدوياً)
+  monthLabel: "يونيو"  // اسم الشهر الحالي
+};
+
+function buildBookingBar() {
+  const free = BOOKING_BAR.totalSlots - BOOKING_BAR.bookedSlots;
+  const pct = Math.round((BOOKING_BAR.bookedSlots / BOOKING_BAR.totalSlots) * 100);
+
+  // لون الشريط حسب التوفر
+  const urgencyColor = free <= 2
+    ? 'linear-gradient(90deg,#ff4757,#ff6b81)'
+    : free <= 4
+      ? 'linear-gradient(90deg,#ffa502,#ff9f43)'
+      : 'linear-gradient(90deg,#FFD966,#ff9f43)';
+
+  const urgencyText = free === 0
+    ? 'مكتمل الحجز ❌'
+    : free === 1
+      ? 'تاريخ واحد فقط! 🔥'
+      : `${free} تواريخ متبقية في ${BOOKING_BAR.monthLabel}`;
+
+  const barHTML = `
+    <div class="glass-box" style="padding:14px 18px; margin-bottom:5px;">
+      <div class="booking-bar">
+        <div class="booking-bar-icon">📅</div>
+        <div class="booking-bar-text">
+          <div class="booking-bar-label">جدول الحجز لشهر ${BOOKING_BAR.monthLabel}</div>
+          <div class="booking-bar-track">
+            <div class="booking-bar-fill" id="bookingFill"
+                 style="width:0%; background:${urgencyColor}"></div>
+          </div>
+        </div>
+        <div class="booking-bar-slots">
+          <span>${free}</span> ${urgencyText.replace(/^\d+ /, '')}
+        </div>
+      </div>
+    </div>`;
+
+  const barEl = document.getElementById('bookingAvailBar');
+  if (barEl) {
+    barEl.innerHTML = barHTML;
+  }
+
+  // تحريك الشريط بعد لحظة
+  setTimeout(() => {
+    const fill = document.getElementById('bookingFill');
+    if (fill) fill.style.width = pct + '%';
+  }, 300);
+}
+
+// =====================================================
+// ٣. حاسبة السعر
+// =====================================================
+
+// بيانات الحاسبة — مبنية من منطق الباقات الموجودة
+const CALC_DATA = {
+  types: [
+    { key: 'photo',    label: '📸 تصوير فوتو',    base: 160 },
+    { key: 'video',    label: '🎬 تصوير فيديو',   base: 80  },
+    { key: 'fullday',  label: '🌟 فل داي',         base: 280 },
+    { key: 'both',     label: '📸🎬 فوتو + فيديو', base: 220 },
+  ],
+  hours: [
+    { key: '2',   label: 'ساعتين',   extra: 0    },
+    { key: '3',   label: '3 ساعات',  extra: 0    },
+    { key: '4',   label: '4 ساعات',  extra: 30   },
+    { key: '6',   label: '6 ساعات',  extra: 60   },
+    { key: 'full',label: 'فل داي',   extra: 120  },
+  ],
+  addons: [
+    { key: 'album',   label: '📒 البوم حراري',      price: 40  },
+    { key: 'print10', label: '🖼️ 10 صور مطبوعة',   price: 20  },
+    { key: 'rush',    label: '⚡ تسليم استعجال',    price: 60  },
+    { key: 'album_gold', label: '✨ البوم جولدن',   price: 100 },
+  ]
+};
+
+let calcState = { type: null, hours: null, addons: new Set() };
+
+function buildPriceCalc() {
+  const typesHTML = CALC_DATA.types.map(t =>
+    `<button class="calc-chip" data-calc-type="${t.key}" onclick="calcSelectType('${t.key}')">${t.label}</button>`
+  ).join('');
+
+  const hoursHTML = CALC_DATA.hours.map(h =>
+    `<button class="calc-chip" data-calc-hours="${h.key}" onclick="calcSelectHours('${h.key}')">${h.label}</button>`
+  ).join('');
+
+  const addonsHTML = CALC_DATA.addons.map(a =>
+    `<button class="calc-chip addon" data-calc-addon="${a.key}" onclick="calcToggleAddon('${a.key}')">
+       ${a.label} <small style="opacity:.6">+${a.price}$</small>
+     </button>`
+  ).join('');
+
+  const calcHTML = `
+    <h2 class="section-title">💰 احسب سعرك</h2>
+    <div class="glass-box">
+      <div class="calc-section">
+        <span class="calc-label">١. اختاري نوع التصوير</span>
+        <div class="calc-options">${typesHTML}</div>
+      </div>
+      <hr class="calc-divider">
+      <div class="calc-section">
+        <span class="calc-label">٢. كم ساعة تحتاجين؟</span>
+        <div class="calc-options">${hoursHTML}</div>
+      </div>
+      <hr class="calc-divider">
+      <div class="calc-section">
+        <span class="calc-label">٣. إضافات (اختياري)</span>
+        <div class="calc-options">${addonsHTML}</div>
+      </div>
+      <div class="calc-result-box">
+        <div>
+          <div class="calc-result-label">السعر التقريبي</div>
+          <div class="calc-result-price" id="calcPrice">—</div>
+          <div class="calc-result-note">* السعر النهائي يُحدد بعد التواصل</div>
+        </div>
+        <a id="calcBookBtn" href="#" class="calc-book-btn" style="pointer-events:none;opacity:.4;">
+          <i class="fab fa-whatsapp"></i> احجزي الآن
+        </a>
+      </div>
+    </div>`;
+
+  const restContent = document.getElementById('restContent');
+  const galleryTitle = restContent.querySelector('.section-title');
+  if (galleryTitle) {
+    galleryTitle.insertAdjacentHTML('beforebegin', calcHTML);
+  }
+}
+
+function calcSelectType(key) {
+  calcState.type = key;
+  document.querySelectorAll('[data-calc-type]').forEach(el => {
+    el.classList.toggle('selected', el.dataset.calcType === key);
+  });
+  updateCalcResult();
+}
+
+function calcSelectHours(key) {
+  calcState.hours = key;
+  document.querySelectorAll('[data-calc-hours]').forEach(el => {
+    el.classList.toggle('selected', el.dataset.calcHours === key);
+  });
+  updateCalcResult();
+}
+
+function calcToggleAddon(key) {
+  if (calcState.addons.has(key)) {
+    calcState.addons.delete(key);
+  } else {
+    calcState.addons.add(key);
+  }
+  document.querySelectorAll('[data-calc-addon]').forEach(el => {
+    el.classList.toggle('selected', calcState.addons.has(el.dataset.calcAddon));
+  });
+  updateCalcResult();
+}
+
+function updateCalcResult() {
+  if (!calcState.type || !calcState.hours) return;
+
+  const typeData  = CALC_DATA.types.find(t => t.key === calcState.type);
+  const hoursData = CALC_DATA.hours.find(h => h.key === calcState.hours);
+  let total = typeData.base + hoursData.extra;
+
+  let addonNames = [];
+  calcState.addons.forEach(k => {
+    const a = CALC_DATA.addons.find(x => x.key === k);
+    if (a) { total += a.price; addonNames.push(a.label); }
+  });
+
+  const priceEl = document.getElementById('calcPrice');
+  const btnEl   = document.getElementById('calcBookBtn');
+
+  if (priceEl) {
+    priceEl.textContent = total + '$';
+    priceEl.style.transform = 'scale(1.15)';
+    setTimeout(() => priceEl.style.transform = 'scale(1)', 200);
+  }
+
+  if (btnEl) {
+    const msg = `السلام عليكم، أريد الاستفسار عن:\nنوع: ${typeData.label}\nالمدة: ${hoursData.label}${addonNames.length ? '\nإضافات: ' + addonNames.join('، ') : ''}\nالسعر التقريبي: ${total}$`;
+    btnEl.href = `https://wa.me/201142308981?text=${encodeURIComponent(msg)}`;
+    btnEl.style.pointerEvents = 'auto';
+    btnEl.style.opacity = '1';
+  }
+}
+
+// =====================================================
+// ١. نموذج الحجز المباشر
+// =====================================================
+
+function buildBookingSection() {
+  const allPackageOptions = [];
+  if (typeof PACKAGES !== 'undefined') {
+    Object.values(PACKAGES).forEach(sec => {
+      sec.items.forEach(p => {
+        allPackageOptions.push(`<option value="${p.title}">${p.title} — ${p.price}</option>`);
+      });
+    });
+  }
+
+  const bookingHTML = `
+    <h2 class="section-title">📋 احجزي موعدك</h2>
+    <div class="glass-box">
+      <p style="color:rgba(255,255,255,0.6);font-size:0.95rem;margin-bottom:18px;text-align:right;">
+        املئي النموذج وسيُفتح واتساب بالتفاصيل جاهزة ✨
+      </p>
+      <div class="booking-form">
+
+        <div class="booking-form-row">
+          <div class="booking-field">
+            <label>الاسم الكريم</label>
+            <input type="text" id="bk_name" placeholder="مثال: نورة العتيبي">
+          </div>
+          <div class="booking-field">
+            <label>رقم الجوال</label>
+            <input type="tel" id="bk_phone" placeholder="+966 5x xxx xxxx">
+          </div>
+        </div>
+
+        <div class="booking-form-row">
+          <div class="booking-field">
+            <label>📅 تاريخ الفرح</label>
+            <input type="date" id="bk_date">
+          </div>
+          <div class="booking-field">
+            <label>🕐 الوقت المتوقع</label>
+            <input type="time" id="bk_time">
+          </div>
+        </div>
+
+        <div class="booking-field">
+          <label>الباقة المطلوبة</label>
+          <select id="bk_package">
+            <option value="">— اختاري الباقة —</option>
+            ${allPackageOptions.join('')}
+          </select>
+        </div>
+
+        <div class="booking-field">
+          <label>📍 مكان الفرح (اختياري)</label>
+          <input type="text" id="bk_location" placeholder="مثال: قاعة الأفراح، الرياض">
+        </div>
+
+        <div class="booking-field">
+          <label>ملاحظات إضافية (اختياري)</label>
+          <textarea id="bk_notes" placeholder="أي تفاصيل أو طلبات خاصة..."></textarea>
+        </div>
+
+        <button class="booking-submit-btn" onclick="submitBooking()">
+          <i class="fab fa-whatsapp"></i>
+          إرسال الحجز عبر واتساب
+        </button>
+
+      </div>
+    </div>`;
+
+  const restContent = document.getElementById('restContent');
+  const galleryTitle = restContent.querySelector('.section-title');
+  if (galleryTitle) {
+    galleryTitle.insertAdjacentHTML('beforebegin', bookingHTML);
+  }
+
+  // تعيين تاريخ افتراضي (اليوم)
+  const today = new Date().toISOString().split('T')[0];
+  const dateInput = document.getElementById('bk_date');
+  if (dateInput) dateInput.min = today;
+}
+
+function submitBooking() {
+  const name     = document.getElementById('bk_name')?.value.trim();
+  const phone    = document.getElementById('bk_phone')?.value.trim();
+  const date     = document.getElementById('bk_date')?.value;
+  const time     = document.getElementById('bk_time')?.value;
+  const pkg      = document.getElementById('bk_package')?.value;
+  const location = document.getElementById('bk_location')?.value.trim();
+  const notes    = document.getElementById('bk_notes')?.value.trim();
+
+  if (!name) { alert('من فضلك أدخلي اسمك الكريم'); return; }
+  if (!date) { alert('من فضلك اختاري تاريخ الفرح');  return; }
+  if (!pkg)  { alert('من فضلك اختاري الباقة');        return; }
+
+  // تنسيق التاريخ للعربية
+  const dateAr = new Date(date).toLocaleDateString('ar-SA', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+  });
+
+  let msg = `السلام عليكم خولة 🌸\nأرغب في حجز جلسة تصوير:\n\n`;
+  msg += `👤 الاسم: ${name}\n`;
+  if (phone)    msg += `📱 الجوال: ${phone}\n`;
+  msg += `📅 التاريخ: ${dateAr}\n`;
+  if (time)     msg += `🕐 الوقت: ${time}\n`;
+  msg += `📦 الباقة: ${pkg}\n`;
+  if (location) msg += `📍 المكان: ${location}\n`;
+  if (notes)    msg += `📝 ملاحظات: ${notes}\n`;
+  msg += `\nأنتظر ردكم لتأكيد الحجز 🙏`;
+
+  window.open(`https://wa.me/201142308981?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// =====================================================
 // تهيئة الصفحة عند التحميل
 // =====================================================
 window.onload = function () {
   // بناء الباقات من الملف الخارجي
   buildPackagesHTML();
+
+  // ١. شريط الحجز
+  buildBookingBar();
+
+  // ٣. حاسبة السعر
+  buildPriceCalc();
+
+  // ١. نموذج الحجز
+  buildBookingSection();
 
   // تأثيرات الظهور
   setTimeout(() => document.getElementById('welcomeBox').classList.add('welcome-animation'), 500);
