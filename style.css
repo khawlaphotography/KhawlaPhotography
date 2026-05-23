@@ -672,3 +672,4 @@ footer {
   .gallery-container { grid-template-columns: repeat(2, 1fr); }
   .form-buttons { flex-direction: column; }
 }
+
