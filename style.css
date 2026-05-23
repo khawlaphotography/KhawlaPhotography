@@ -1,341 +1,674 @@
-// ===================================================
-// packages.js - ملف بيانات الباقات
-// لإضافة باقة جديدة: انسخ أي كائن وعدّل البيانات
-// ===================================================
+/* ===================================================
+   style.css - ملف التنسيقات الرئيسي
+   Khawla Al Gahrani Photography
+   =================================================== */
 
-const PACKAGES = {
+/* ===== الأنماط الأساسية ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  // ===================================================
-  // القسم الأول: عروض التصوير الفوتوغرافي
-  // ===================================================
-  photography: {
-    sectionTitle: "عروض التصوير الفوتوغرافي",
-    items: [
-      {
-        key: "offer",
-        title: "عرض التوفير",
-        price: "170$",
-        features: [
-          "تصوير لمدة ساعتين",
-          "فوتوسيشن شامل 100$",
-          "مع تصوير الزفة و رقصة العرسان",
-          "تسليم على فلاشة"
-        ],
-        modalDetails: [
-          "تصوير لمدة ساعتين",
-          "تصوير فوتوسيشن 100$",
-          "فيديو تصوير الزفة ورقص العرسان و الجاتو",
-          "بدون طباعة الصور - تسلم الصور على فلاشة"
-        ]
-      },
-      {
-        key: "package1",
-        title: "البكج الاول",
-        price: "160$",
-        features: [
-          "تصوير فوتو 3 ساعات",
-          "فوتوسيشن شامل العروسين والاهل والزفة",
-          "طباعة 6 صفحات البوم عادي",
-          "تسليم الصور فلاشة"
-        ],
-        modalDetails: [
-          "تصوير لمدة 3 ساعات",
-          "فوتوسيشن شامل تفاصيل العروسين والعروسه والعريس والزفه والاهل",
-          "طباعة 6 صفحات البوم عادي",
-          "تسليم الصور على فلاشة",
-          "تعديل كامل الصور من إضاءة وألوان"
-        ]
-      },
-      {
-        key: "package2",
-        title: "البكج الثاني",
-        price: "190$",
-        features: [
-          "تصوير فوتو 4 ساعات",
-          "طباعة البوم حراري 7 صفحات",
-          "طباعة 10 صور هدية",
-          "تسليم الصور فلاشة"
-        ],
-        modalDetails: [
-          "تصوير لمدة 4 ساعات",
-          "فوتوسيشن احترافي شامل الديكوريشن وجميع تفاصيل العروسين والعريس والعروسه والاهل والزفة",
-          "تصوير تقطيع الجاتو",
-          "طباعة 10 صور حجم A5 هدية",
-          "طباعة 7 صفحات البوم حراري",
-          "تسلم جميع الصور على فلاشة",
-          "طباعة صورة هدية للعروسة"
-        ]
-      },
-      {
-        key: "package3",
-        title: "البكج الفضي",
-        price: "220$",
-        features: [
-          "تصوير 6 ساعات",
-          "طباعة 10 صفحات البوم حراري",
-          "طباعة 10 صور هدية",
-          "تسليم الصور فلاشة"
-        ],
-        modalDetails: [
-          "تصوير لمدة 6 ساعات",
-          "فوتوسيشن احترافي شامل الديكوريشن وجميع تفاصيل العروسين والعريس والعروسه والاهل والزفة",
-          "تصوير تقطيع الجاتو",
-          "طباعة 10 صورة حجم A5",
-          "تسلم جميع الصور على فلاشة"
-        ]
-      }
-    ]
-  },
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Amiri', serif;
+  color: white;
+  background: linear-gradient(rgba(10,10,10,0.6), rgba(0,0,0,0.7)),
+              url('https://i.postimg.cc/MG84kx89/file-000000007dbc722fadab0344567326df.png') no-repeat center center fixed;
+  background-size: cover;
+}
 
-  // ===================================================
-  // القسم الثاني: عروض FULL DAY
-  // ===================================================
-  fullday: {
-    sectionTitle: "عروض FULL DAY",
-    items: [
-      {
-        key: "gold",
-        title: "العرض الذهبي",
-        price: "280$",
-        features: [
-          "فوتوسيشن احترافي للعروسين",
-          "تفاصيل القاعة والديكوريشن والزفة",
-          "تجهيزات العروسة من اول اليوم",
-          "طباعة 10 صور + 10 صفحات البوم حراري"
-        ],
-        modalDetails: [
-          "فوتوسيشن احترافي العروسين",
-          "تفاصيل القاعة والديكوريشن والزفة ودخول الأهل",
-          "تجهيزات العروسه من اول اليوم في الصالون",
-          "طباعة 10 صور حجم A5",
-          "طباعة 10 صفحات البوم حراري",
-          "تسليم الصور على فلاشة"
-        ]
-      },
-      {
-        key: "diamond",
-        title: "العرض الالماسي",
-        price: "300$",
-        features: [
-          "فوتوسيشن احترافي للعروسين",
-          "تفاصيل القاعة والديكوريشن والزفة",
-          "تجهيزات العروسة من اول اليوم",
-          "10 صفحات البوم + 5 ميني البوم"
-        ],
-        modalDetails: [
-          "فوتوسيشن احترافي العروسين",
-          "تفاصيل القاعة والديكوريشن والزفة ودخول الأهل",
-          "تجهيزات العروسه من اول اليوم",
-          "طباعة 10 صور + 10 صفحات البوم حراري + 5 ميني البوم",
-          "صورة مكبرة خشبية",
-          "تسليم الصور على فلاشة"
-        ]
-      },
-      {
-        key: "velvet",
-        title: "العرض المخملي",
-        price: "400$",
-        features: [
-          "فل داي فوتو كامل",
-          "البوم جولدن فاخر",
-          "تصوير احترافي شامل",
-          "تسليم كامل التفاصيل"
-        ],
-        modalDetails: [
-          "فل داي فوتو مع الالبوم الجولدن",
-          "تصوير احترافي شامل لجميع التفاصيل",
-          "البوم فاخر"
-        ]
-      }
-    ]
-  },
+.container {
+  width: 90%;
+  max-width: 900px;
+  padding: 30px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
 
-  // ===================================================
-  // القسم الثالث: عروض تصوير الفيديو (تم الحفاظ على القديم وإضافة الجديد الناقص)
-  // ===================================================
-  video: {
-    sectionTitle: "عروض تصوير الفيديو",
-    items: [
-      // الباقات القديمة الأصلية (لم تُحذف)
-      {
-        key: "video1",
-        title: "فيديو مستمر",
-        price: "80$",
-        features: [
-          "تصوير الزفة",
-          "تقطيع جاتو",
-          "رقص العرسان",
-          "فيديو ثابت"
-        ],
-        modalDetails: [
-          "فيديو مستمر يشمل:",
-          "تصوير الزفة",
-          "تقطيع جاتو",
-          "رقص العرسان",
-          "فيديو ثابت"
-        ]
-      },
-      {
-        key: "video2",
-        title: "فيديو مستمر شامل",
-        price: "100$",
-        features: [
-          "تصوير الزفة كامل",
-          "مونتاج احترافي",
-          "تسليم سريع",
-          "جودة عالية"
-        ],
-        modalDetails: [
-          "فيديو مستمر يشمل:",
-          "تصوير الزفة كامل",
-          "مونتاج احترافي"
-        ]
-      },
-      {
-        key: "video3",
-        title: "برومو هاف داي",
-        price: "150$",
-        features: [
-          "تصوير نصف يوم",
-          "مونتاج احترافي",
-          "تسليم كامل",
-          "جودة عالية"
-        ],
-        modalDetails: [
-          "برومو هاف داي",
-          "تصوير نصف يوم",
-          "مونتاج احترافي"
-        ]
-      },
-      {
-        key: "video4",
-        title: "برومو فل داي",
-        price: "180$",
-        features: [
-          "تصوير كامل اليوم",
-          "تصوير العروسة من البداية",
-          "الميكب والفستان",
-          "كل التفاصيل والزفة"
-        ],
-        modalDetails: [
-          "برومو احترافي فل داي:",
-          "تصوير العروسه من بداية اليوم",
-          "الميكب والفستان والتفاصيل",
-          "الزفة وتقطيع الجاتو",
-          "السيشن وكل التفاصيل"
-        ]
-      },
-      {
-        key: "video5",
-        title: "عرض بدون وجه تشويقي",
-        price: "70$",
-        fullWidth: true,  
-        features: [
-          "تفاصيل كاملة بدون وجه تشويقي",
-          "تسليم سريع",
-          "جودة عالية",
-          "سعر خاص"
-        ],
-        modalDetails: [
-          "تفاصيل كاملة بدون وجه تشويقي",
-          "عرض خاص"
-        ]
-      },
+/* ===== تأثيرات الحركة ===== */
+#welcomeBox {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1), transform 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 80%;
+  max-width: 600px;
+  margin: 20px auto 15px auto;
+}
 
-      // الباقات الجديدة المستخرجة من الصورة (تمت إضافتها هنا)
-      {
-        key: "videoPromoFullDay",
-        title: "فيديو فل داي برومو شامل",
-        price: "180$",
-        features: [
-          "فيديو فل داي برومو شامل كامل الزفاف"
-        ],
-        modalDetails: [
-          "تغطية فيديو فل داي برومو شامل لجميع تفاصيل الزفاف."
-        ]
-      },
-      {
-        key: "videoFullPromoZaffa",
-        title: "فيديو فل داي برومو + زفة",
-        price: "250$",
-        features: [
-          "فيديو فل داي برومو",
-          "زفة شامل كامل الزفاف"
-        ],
-        modalDetails: [
-          "فيديو فل داي برومو مع تصوير زفة شامل لكامل الزفاف."
-        ]
-      },
-      {
-        key: "videoFullPromoZaffaDetails",
-        title: "برومو + زفة + تفاصيل",
-        price: "300$",
-        features: [
-          "فيديو فل داي برومو",
-          "زفة شامل كامل الزفاف",
-          "فيديو تفاصيل"
-        ],
-        modalDetails: [
-          "فيديو فل داي برومو + زفة شامل كامل الزفاف + فيديو تفاصيل."
-        ]
-      },
-      {
-        key: "extraTeaser",
-        title: "فيديو عرض تشويقي (Extra)",
-        price: "80$",
-        features: [
-          "فيديو عرض تشويقي إضافي"
-        ],
-        modalDetails: [
-          "إضافة فيديو عرض تشويقي (Teaser) مميز."
-        ]
-      },
-      {
-        key: "extraDetailsVideo",
-        title: "فيديو تفاصيل (Extra)",
-        price: "120$",
-        features: [
-          "فيديو تفاصيل إضافي"
-        ],
-        modalDetails: [
-          "إضافة فيديو تفاصيل مخصص للمونتاج الفخم والديكورات."
-        ]
-      },
-      {
-        key: "extraDrone",
-        title: "فيديو درون (Extra)",
-        price: "120$",
-        features: [
-          "تصوير درون جوي احترافي"
-        ],
-        modalDetails: [
-          "لقطات جوية مميزة بطائرة الدرون لتوثيق المكان."
-        ]
-      }
-    ]
-  },
-// ===================================================
-// الملاحظات العامة - مشتركة بين جميع الباقات
-// ===================================================
-const GENERAL_NOTES = [
-  "منكان الفستان ب ٥٠٠ج",
-  "اي طلبات خاصة للعروسة تنضاف للعروض ويتم الإتفاق عليها",
-  "انواع الالبومات تنضاف بالسعر حسب رغبة العروسة (السيراميك و المخمل)",
-  "تعديل الصور يشمل كامل العروض",
-  "تثبيت الحجز بدفع نص العربون",
-  "اي وقت إضافي: 1500 جنيه للساعة",
-  "المواصلات على أصحاب العرس",
-  "تسليم الصور خلال شهر ونص",
-  "الاستعجال: إضافة 60$"
-];
+.welcome-animation {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
 
-// ===================================================
-// إعدادات العرض المؤقت
-// ===================================================
-const SPECIAL_OFFER = {
-  enabled: false,          
-  title: "عرض مؤقت 🔥",
-  description: "احجز أي بكج واحصل على <strong>البوم صور هدية</strong>",
-  endsAt: "2026-06-30"    
-};
+#restContent {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 2s cubic-bezier(0.4, 0, 0.2, 1), transform 2s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
+#restContent.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== صندوق الزجاج الأساسي ===== */
+.glass-box {
+  background: rgba(15,15,20,0.35);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 30px;
+  padding: 25px 20px;
+  text-align: center;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.glass-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+}
+
+.welcome-box {
+  background: rgba(15,15,20,0.5);
+  backdrop-filter: blur(25px);
+  border: 2px solid rgba(255,215,0,0.3);
+  width: 80%;
+  margin: 0 auto 15px auto;
+  position: relative;
+  z-index: 100;
+}
+
+/* ===== العناوين والنصوص ===== */
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 8px;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  opacity: .9;
+}
+
+.section-title {
+  font-size: 2rem;
+  margin: 15px 0 8px;
+  text-align: center;
+  font-weight: bold;
+  text-shadow: 1px 1px 5px black;
+}
+
+.section-subtitle {
+  font-size: 1.8rem;
+  margin: 25px 0 15px;
+  text-align: center;
+  font-weight: bold;
+  color: #FFE5A3;
+  border-bottom: 2px solid rgba(255,215,0,0.3);
+  padding-bottom: 8px;
+}
+
+/* ===== شبكة الباقات ===== */
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  width: 100%;
+}
+
+.package-card {
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.package-card:hover {
+  border-color: rgba(255, 215, 0, 0.6);
+  transform: translateY(-5px);
+  box-shadow: 0 25px 45px rgba(0,0,0,0.9);
+}
+
+.package-card h3 {
+  font-size: 1.7rem;
+  border-bottom: 2px solid rgba(255,215,0,0.5);
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  color: #FFE5A3;
+}
+
+.package-card .price-tag {
+  font-size: 1.5rem;
+  color: #FFD966;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.package-card.full-width {
+  grid-column: span 2;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+ul {
+  list-style: none;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  flex-grow: 1;
+}
+
+li {
+  margin-bottom: 6px;
+  border-bottom: 1px dashed rgba(255,255,255,0.1);
+  padding-bottom: 5px;
+}
+
+/* ===== قسم النبذة والتواصل ===== */
+.about-text {
+  font-style: italic;
+  font-size: 1.3rem;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.signature {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #FFD966;
+  letter-spacing: 1px;
+}
+
+/* ===== أزرار التواصل الاجتماعي ===== */
+.social-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0 8px;
+}
+
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 25px;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  transition: all .3s ease;
+  min-width: 160px;
+}
+
+.social-btn i { font-size: 1.5rem; }
+.social-btn.instagram { background: linear-gradient(45deg,#f09433,#dc2743,#bc1888); }
+.social-btn.tiktok { background: #000; border-color: #25f4ee; }
+.social-btn.whatsapp { background: #25D366; }
+
+.social-btn:hover {
+  transform: scale(1.05) translateY(-3px);
+  filter: brightness(1.2);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+/* ===== معرض الصور ===== */
+.gallery-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 10px 5px;
+  scrollbar-width: thin;
+  scrollbar-color: #FFD966 rgba(255,255,255,0.1);
+}
+
+.gallery-container::-webkit-scrollbar { width: 8px; }
+.gallery-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
+.gallery-container::-webkit-scrollbar-thumb { background: #FFD966; border-radius: 10px; }
+
+.gallery-container img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.gallery-container img:hover { transform: scale(1.03); }
+
+/* ===== قسم التعليقات ===== */
+.testimonials-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.empty-testimonials {
+  text-align: center;
+  padding: 30px;
+  color: rgba(255,255,255,0.6);
+  font-style: italic;
+  font-size: 1.2rem;
+  border: 2px dashed rgba(255,215,0,0.3);
+  border-radius: 20px;
+}
+
+.testimonials-scroll-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-left: 10px;
+  scroll-behavior: smooth;
+}
+
+.testimonials-scroll-container::-webkit-scrollbar { width: 8px; }
+.testimonials-scroll-container::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
+.testimonials-scroll-container::-webkit-scrollbar-thumb { background: #FFD966; border-radius: 10px; }
+
+.testimonial-item {
+  background: rgba(255,255,255,0.03);
+  border-radius: 20px;
+  padding: 20px;
+  border-right: 4px solid #FFD966;
+  text-align: right;
+  margin-bottom: 15px;
+}
+
+.testimonial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.testimonial-name { color: #FFE5A3; font-size: 1.2rem; font-weight: bold; }
+.testimonial-time { color: rgba(255,255,255,0.5); font-size: 0.9rem; }
+.testimonial-text { font-size: 1.2rem; line-height: 1.6; margin: 10px 0; }
+
+.testimonial-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.like-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 5px 15px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.like-button i { transition: transform 0.2s ease; }
+.like-button:hover i { transform: scale(1.2); }
+
+.like-button.liked i {
+  color: #ff3b3b;
+  animation: heartPop 0.3s ease;
+}
+
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+
+.like-count { font-weight: bold; }
+
+.delete-button {
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+}
+
+.delete-button:hover { opacity: 0.7; transform: scale(1.1); }
+
+/* ===== نموذج التعليق ===== */
+.add-testimonial-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: right;
+}
+
+.add-testimonial-form input,
+.add-testimonial-form textarea {
+  padding: 8px 12px;
+  border-radius: 30px;
+  border: 1px solid rgba(255,215,0,0.3);
+  background: rgba(255,255,255,0.1);
+  color: white;
+  font-family: 'Amiri', serif;
+  font-size: 0.95rem;
+}
+
+.add-testimonial-form textarea {
+  border-radius: 15px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.add-testimonial-form input:focus,
+.add-testimonial-form textarea:focus {
+  outline: none;
+  border-color: #FFD966;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.submit-btn, .view-all-btn {
+  padding: 8px 15px;
+  border-radius: 30px;
+  background: #FFD966;
+  color: black;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: 'Amiri', serif;
+  transition: all 0.3s ease;
+}
+
+.submit-btn { flex: 2; }
+.view-all-btn { flex: 1; }
+
+.submit-btn:hover, .view-all-btn:hover {
+  transform: translateY(-2px);
+  background: #FFE5A3;
+  box-shadow: 0 5px 15px rgba(255,217,102,0.3);
+}
+
+/* ===== المودالات ===== */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+.modal-content {
+  background: rgba(15,15,20,0.35);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 30px;
+  padding: 35px 30px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  color: white;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+  animation: modalFadeIn 0.5s;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.close-modal {
+  position: absolute;
+  top: 15px; left: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: 0.3s;
+  line-height: 1;
+  width: 35px; height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(15,15,20,0.5);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.close-modal:hover {
+  color: #FFE5A3;
+  opacity: 1;
+  transform: scale(1.1);
+  background: rgba(255,215,0,0.15);
+  border-color: rgba(255,215,0,0.3);
+}
+
+/* ===== محتوى مودال الباقة ===== */
+.modal-content h2 {
+  font-size: 2.2rem;
+  color: #FFE5A3;
+  border-bottom: 2px solid rgba(255,215,0,0.5);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.modal-content .detail-box {
+  background: rgba(15,15,20,0.3);
+  border-radius: 20px;
+  padding: 20px;
+  margin: 15px 0;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.modal-content .detail-box p {
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(255,255,255,0.08);
+  font-size: 1.1rem;
+  text-align: right;
+}
+
+.modal-content .detail-box p:last-child { border-bottom: none; }
+
+.modal-content .price-box {
+  font-size: 2rem;
+  color: #FFE5A3;
+  text-align: center;
+  margin: 20px 0;
+  padding: 15px;
+  background: rgba(255,215,0,0.1);
+  border-radius: 50px;
+  border: 1px solid rgba(255,215,0,0.3);
+}
+
+.modal-content .notes-box {
+  background: rgba(0,0,0,0.3);
+  border-radius: 20px;
+  padding: 20px;
+  margin: 20px 0;
+  border-right: 3px solid #FFD966;
+}
+
+.modal-content .notes-box h3 { color: #FFD966; margin-bottom: 15px; }
+
+.modal-content .notes-box p {
+  padding: 5px 0;
+  border-bottom: 1px dashed rgba(255,255,255,0.08);
+  font-size: 1rem;
+  text-align: right;
+}
+
+.modal-content .notes-box p:last-child { border-bottom: none; }
+
+.modal-wa-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #25D366;
+  color: white;
+  text-decoration: none;
+  padding: 15px 25px;
+  border-radius: 60px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-top: 10px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.modal-wa-btn:hover {
+  transform: scale(1.03) translateY(-2px);
+  background: #20b859;
+  box-shadow: 0 15px 30px rgba(37,211,102,0.4);
+}
+
+/* ===== مودال جميع التعليقات ===== */
+.all-testimonials-list { display: flex; flex-direction: column; gap: 15px; margin: 20px 0; }
+
+.all-testimonials-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-left: 10px;
+  scroll-behavior: smooth;
+}
+
+.all-testimonials-scroll::-webkit-scrollbar { width: 8px; }
+.all-testimonials-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px; }
+.all-testimonials-scroll::-webkit-scrollbar-thumb { background: #FFD966; border-radius: 10px; }
+
+.all-testimonial-item {
+  background: rgba(255,255,255,0.03);
+  border-radius: 15px;
+  padding: 15px;
+  border-right: 3px solid #FFD966;
+  margin-bottom: 10px;
+}
+
+.all-testimonial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.all-testimonial-name { color: #FFE5A3; font-weight: bold; }
+.all-testimonial-time { color: rgba(255,255,255,0.5); font-size: 0.8rem; }
+
+.all-testimonial-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.all-like-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: #ff6b6b;
+  cursor: pointer;
+}
+
+/* ===== Lightbox ===== */
+.lightbox {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.9);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  cursor: pointer;
+}
+
+.lightbox img {
+  max-width: 90%;
+  max-height: 85%;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.2);
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+/* ===== زر العودة للأعلى ===== */
+#topBtn {
+  position: fixed;
+  bottom: 20px; left: 20px;
+  padding: 12px 17px;
+  border: none;
+  border-radius: 50%;
+  background: #FFD966;
+  color: black;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  display: none;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.5);
+  transition: all 0.3s ease;
+  z-index: 1500;
+}
+
+#topBtn:hover { transform: scale(1.1); background: #FFE5A3; }
+
+/* ===== الفوتر ===== */
+footer {
+  margin-top: 30px;
+  padding: 15px;
+  opacity: .8;
+  font-size: 0.9rem;
+  text-align: center;
+  letter-spacing: 2px;
+  background: rgba(0,0,0,0.3);
+  width: 100%;
+}
+
+/* ===== تحسينات الشاشات الصغيرة ===== */
+@media (max-width: 768px) {
+  h1 { font-size: 2.2rem; }
+  .section-title { font-size: 1.8rem; }
+  .container { width: 95%; }
+  .glass-box { padding: 20px 12px; }
+  .about-text { font-size: 1.2rem; }
+  .social-btn { padding: 10px 20px; font-size: 1.1rem; min-width: 140px; }
+  .packages-grid { grid-template-columns: 1fr; }
+  .package-card.full-width { grid-column: span 1; }
+  .welcome-box { width: 95%; }
+  .gallery-container { grid-template-columns: repeat(2, 1fr); }
+  .form-buttons { flex-direction: column; }
+}
