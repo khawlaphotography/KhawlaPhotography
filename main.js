@@ -17,23 +17,60 @@ function buildPackagesHTML() {
 
   let html = '';
 
-  Object.values(PACKAGES).forEach(section => {
-    html += `<h2 class="section-subtitle">${section.sectionTitle}</h2>`;
-    html += `<div class="packages-grid">`;
+  Object.entries(PACKAGES).forEach(([sectionKey, section]) => {
+    const isVIP = sectionKey === 'vip';
 
-    section.items.forEach(pkg => {
-      const fullWidthClass = pkg.fullWidth ? ' full-width' : '';
-      const featuresHTML = pkg.features.map(f => `<li>${f}</li>`).join('');
+    if (isVIP) {
+      // عنوان مميز لقسم VIP
+      html += `<h2 class="vip-section-title">${section.sectionTitle}</h2>`;
+      html += `<div class="vip-grid">`;
 
-      html += `
-        <div class="glass-box package-card${fullWidthClass}" data-package="${pkg.key}">
-          <h3>${pkg.title}</h3>
-          <ul>${featuresHTML}</ul>
-          <div class="price-tag">${pkg.price}</div>
-        </div>`;
-    });
+      section.items.forEach(pkg => {
+        const isVipStar = pkg.key === 'vipstar';
+        const featuresHTML = pkg.features.map(f => `<li>${f}</li>`).join('');
 
-    html += `</div>`;
+        if (isVipStar) {
+          html += `
+            <div class="vip-card vip-star" data-package="${pkg.key}">
+              <span class="vip-badge">⭐ STAR</span>
+              <div class="vip-star-info">
+                <h3>${pkg.title}</h3>
+                <ul>${featuresHTML}</ul>
+              </div>
+              <div class="price-tag">${pkg.price}</div>
+            </div>`;
+        } else {
+          html += `
+            <div class="vip-card" data-package="${pkg.key}">
+              <span class="vip-badge">VIP</span>
+              <h3>${pkg.title}</h3>
+              <ul>${featuresHTML}</ul>
+              <div class="price-tag">${pkg.price}</div>
+            </div>`;
+        }
+      });
+
+      html += `</div>`;
+
+    } else {
+      // باقي الأقسام - الشكل الأصلي
+      html += `<h2 class="section-subtitle">${section.sectionTitle}</h2>`;
+      html += `<div class="packages-grid">`;
+
+      section.items.forEach(pkg => {
+        const fullWidthClass = pkg.fullWidth ? ' full-width' : '';
+        const featuresHTML = pkg.features.map(f => `<li>${f}</li>`).join('');
+
+        html += `
+          <div class="glass-box package-card${fullWidthClass}" data-package="${pkg.key}">
+            <h3>${pkg.title}</h3>
+            <ul>${featuresHTML}</ul>
+            <div class="price-tag">${pkg.price}</div>
+          </div>`;
+      });
+
+      html += `</div>`;
+    }
   });
 
   // إدراج قبل معرض الصور مباشرة
@@ -104,10 +141,10 @@ function openPackageModal(packageKey) {
 }
 
 // =====================================================
-// ربط النقر على بطاقات الباقات
+// ربط النقر على بطاقات الباقات (عادية + VIP)
 // =====================================================
 function attachPackageCardEvents() {
-  document.querySelectorAll('.package-card').forEach(card => {
+  document.querySelectorAll('.package-card, .vip-card').forEach(card => {
     card.addEventListener('click', function () {
       const key = this.dataset.package;
       if (key) openPackageModal(key);
@@ -367,20 +404,14 @@ function closeAllTestimonialsModal() {
 // تهيئة الصفحة عند التحميل
 // =====================================================
 window.onload = function () {
-  // بناء الباقات من الملف الخارجي
   buildPackagesHTML();
 
-  // تأثيرات الظهور
   setTimeout(() => document.getElementById('welcomeBox').classList.add('welcome-animation'), 500);
   setTimeout(() => document.getElementById('restContent').classList.add('show'), 2500);
 
-  // تحميل التعليقات
   displayTestimonials();
-
-  // العرض المؤقت
   initSpecialOffer();
 
-  // حدث نموذج التعليق
   document.getElementById('addTestimonialForm')?.addEventListener('submit', function (e) {
     e.preventDefault();
     const name = document.getElementById('newName').value.trim();
@@ -388,14 +419,12 @@ window.onload = function () {
     if (name && comment) { addTestimonial(name, comment); this.reset(); }
   });
 
-  // زر عرض جميع التعليقات
   document.getElementById('showTestimonialsBtn')?.addEventListener('click', async function () {
     await displayAllTestimonials();
     document.getElementById('allTestimonialsModal').style.display = 'flex';
     document.body.style.overflow = 'hidden';
   });
 
-  // إغلاق المودالات بعلامة X
   document.querySelectorAll('.close-modal').forEach(btn => {
     btn.addEventListener('click', function () {
       this.closest('.modal').style.display = 'none';
@@ -403,7 +432,6 @@ window.onload = function () {
     });
   });
 
-  // إغلاق المودال بالنقر خارجه
   window.addEventListener('click', function (e) {
     if (e.target.classList.contains('modal')) {
       e.target.style.display = 'none';
@@ -411,12 +439,10 @@ window.onload = function () {
     }
   });
 
-  // زر العودة للأعلى
   const topBtn = document.getElementById('topBtn');
   window.onscroll = () => { topBtn.style.display = window.scrollY > 300 ? 'block' : 'none'; };
   topBtn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Lightbox للصور
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
   document.querySelectorAll('.gallery-container img').forEach(img => {
