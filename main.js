@@ -231,7 +231,7 @@ function buildTestimonialCard(t, userId, isModal = false) {
       <p class="${isModal ? '' : 'testimonial-text'}">"${t.comment}"</p>
       <div class="${footerClass}">
         <button class="${btnClass} ${hasLiked ? 'liked' : ''}" onclick="handleLike('${t.id}')">
-          <i class="fas ${hasLiked ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+          <i class="${hasLiked ? 'fas' : 'far'} fa-heart"></i>
           <span class="like-count">${t.likes || 0}</span>
         </button>
         ${deleteBtn}
